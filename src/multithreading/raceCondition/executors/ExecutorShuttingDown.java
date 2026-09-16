@@ -84,7 +84,7 @@ public class ExecutorShuttingDown implements Runnable {
         }
         latch1.await();// this is the method will block upto latch threads will becomes 0
         // but here the problem is still executor service was not got shutdown
-        executorService.shutdown(); // this method will shut down the executor and there is no any tasks can  be performed after the shutdown
+        //executorService.shutdown(); // this method will shut down the executor and there is no any tasks can  be performed after the shutdown
 
         /*Thread threadNew = new Thread(new ExecutorShuttingDown(urls,latch1));
         executorService.submit(threadNew);
@@ -92,6 +92,20 @@ public class ExecutorShuttingDown implements Runnable {
 
         when we added the executor after shutdown we will ended up with RejectedExecutionException
         */
+
+        executorService.shutdownNow();
+        /* what is the difference between shutdown and shutdownnow methods
+        shutdown method will wait  to all executorService threads complete the execution
+        shutdownnow method will immediate shutdown the executor service even though there is processing threads
+
+        */
+        while(!executorService.isTerminated()){
+
+            Thread.sleep(1000);
+
+            // this block will help us to synchronize the executor service thread with main thread
+
+        }
         long endTime = System.currentTimeMillis();
 
         Thread.sleep(10000);
